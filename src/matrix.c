@@ -30,7 +30,7 @@ matrix random_matrix(int rows, int cols, float s)
     int i, j;
     for(i = 0; i < rows; ++i){
         for(j = 0; j < cols; ++j){
-            m.data[i*cols + j] = 2*s*(rand()%1000/1000.0) - s;    
+            m.data[i*cols + j] = 2*s*(rand()%1000/1000.0) - s;
         }
     }
     return m;
@@ -52,8 +52,9 @@ matrix copy_matrix(matrix m)
 {
     matrix c = make_matrix(m.rows, m.cols);
     // TODO: 1.1 - Fill in the new matrix
-
-
+    for (int i = 0; i < m.rows * m.cols; i++) {
+        c.data[i] = m.data[i];
+    }
     return c;
 }
 
@@ -63,9 +64,12 @@ matrix copy_matrix(matrix m)
 matrix transpose_matrix(matrix m)
 {
     // TODO: 1.2 - Make a matrix the correct size, fill it in
-    matrix t = make_matrix(1,1);
-
-
+    matrix t = make_matrix(m.cols, m.rows);
+    for (int i = 0; i < m.cols; i++) {
+        for (int j = 0; j < m.rows; j++) {
+            t.data[i * m.rows + j] = m.data[i + j * m.cols];
+        }
+    }
     return t;
 }
 
@@ -78,6 +82,9 @@ void axpy_matrix(float a, matrix x, matrix y)
     assert(x.cols == y.cols);
     assert(x.rows == y.rows);
     // TODO: 1.3 - Perform the weighted sum, store result back in y
+    for (int i = 0; i < x.rows * x.cols; i++) {
+        y.data[i] = a * x.data[i] + y.data[i];
+    }
 }
 
 // Perform matrix multiplication a*b, return result
@@ -87,9 +94,13 @@ matrix matmul(matrix a, matrix b)
 {
     matrix c = make_matrix(a.rows, b.cols);
     // TODO: 1.4 - Implement matrix multiplication. Make sure it's fast!
-
-
-
+    for (int i = 0; i < a.rows; i++) { // a.rows == c.rows
+        for (int j = 0; j < a.cols; j++) { // a.cols == b.rows
+            for (int k = 0; k < b.cols; k++) { // b.cols == c.cols
+                c.data[i * c.cols + k] += a.data[i * a.cols + j] * b.data[j * b.cols + k];
+            }
+        }
+    }
     return c;
 }
 
